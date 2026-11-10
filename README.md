@@ -46,15 +46,16 @@ No extra libraries needed — WiFi and esp_now are built into the ESP32 core.
 
 ## Vehicle IDs
 
-| ID | Vehicle |
-|----|---------|
-| 0 | Excavator |
-| 1 | Skid Steer |
-| 2 | Dump Truck |
-| 3 | Semi Truck |
-| 4 | Log Truck |
-| 5 | Wheel Loader |
-| 6 | Crane |
+| ID | Vehicle | Link |
+|----|---------|------|
+| 0 | Excavator | [Link](https://github.com/bscholer/Mini_Excavator) |
+| 1 | Skid Steer | [Link](https://github.com/bscholer/Mini-Dozer) |
+| 2 | Dump Truck | [Link](https://github.com/bscholer/Mini-Truck) |
+| 3 | Semi Truck | [Link](https://github.com/bscholer/Mini-Fork) |
+| 4 | Log Truck | [Link](https://github.com/bscholer/MiniSkidi-V3.0) |
+| 5 | MiniLift (truck + crane) | `vehicles/MiniLift/MiniLift_Truck_ESPNOW` |
+| 6 | Wheel Loader | TBD |
+
 
 ## Adapting other vehicles
 
@@ -80,3 +81,11 @@ typedef struct __attribute__((packed)) {
   uint8_t misc;        // thumbL, thumbR bitfield
 } GamepadPacket;       // 12 bytes
 ```
+
+## MiniLift
+
+Truck ESP32 (`vehicles/MiniLift/MiniLift_Truck_ESPNOW`, ID 5) receives ESP-NOW and drives the truck. The crane daughter-board (`vehicles/MiniLift/MiniLift_Crane`) is unchanged and still driven over serial from the truck board.
+
+- **Y**: toggle drive / crane mode. **B**: outrigger direction. **X**: crab walk. R3/L3: aux lights.
+- Drive mode: left stick Y throttle, right stick X steering, d-pad up/down trim, L1/R1 front and L2/R2 rear outriggers.
+- Crane mode: left Y boom, left X pivot, right Y extension, d-pad up/down winch, d-pad left/right ballast.
