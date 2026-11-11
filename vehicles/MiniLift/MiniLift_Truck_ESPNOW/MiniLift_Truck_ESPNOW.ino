@@ -213,22 +213,15 @@ void allStop() {
 void setup() {
   Serial.begin(115200);
 
-  pinMode(frontOutriggerMotor0, OUTPUT);
-  pinMode(frontOutriggerMotor1, OUTPUT);
-  pinMode(rearOutriggerMotor0, OUTPUT);
-  pinMode(rearOutriggerMotor1, OUTPUT);
-  pinMode(auxAttach0, OUTPUT);
-  pinMode(auxAttach1, OUTPUT);
-  pinMode(auxAttach2, OUTPUT);
-  pinMode(auxAttach3, OUTPUT);
-  digitalWrite(auxAttach2, LOW);
-  digitalWrite(auxAttach3, LOW);
-  pinMode(rearMotor0, OUTPUT);
-  pinMode(rearMotor1, OUTPUT);
-  pinMode(frontMotor0, OUTPUT);
-  pinMode(frontMotor1, OUTPUT);
-  allStop();
-
+  // Servos first: analogWrite on the motor pins would claim the LEDC timers they need.
+  ESP32PWM::allocateTimer(0);
+  ESP32PWM::allocateTimer(1);
+  ESP32PWM::allocateTimer(2);
+  ESP32PWM::allocateTimer(3);
+  rearSteeringServo.setPeriodHertz(50);
+  frontSteeringServo.setPeriodHertz(50);
+  frontOutriggerServo.setPeriodHertz(50);
+  rearOutriggerServo.setPeriodHertz(50);
   rearSteeringServo.attach(rearSteeringServoPin);
   rearSteeringServo.write(adjustedSteeringValue);
   frontSteeringServo.attach(frontSteeringServoPin);
@@ -238,6 +231,16 @@ void setup() {
   rearOutriggerServo.attach(rearOutriggerServoPin);
   rearOutriggerServo.write(90);
   outriggerServosTimeout = millis();
+
+  const int outputPins[] = {
+    frontOutriggerMotor0, frontOutriggerMotor1, rearOutriggerMotor0, rearOutriggerMotor1,
+    auxAttach0, auxAttach1, auxAttach2, auxAttach3,
+    rearMotor0, rearMotor1, frontMotor0, frontMotor1
+  };
+  for (int pin : outputPins) {
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+  }
 
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
